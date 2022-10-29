@@ -23,7 +23,7 @@ const HomeScreen: FC<RootStackScreenProps<"HOME">> = ({ navigation }) => (
         <View style={styles.button}>
           <CustomButton
             title="VIN"
-            routeName="Barcode"
+            routeName="SEARCH"
             navigation={navigation}
           />
         </View>
