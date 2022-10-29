@@ -10,7 +10,8 @@ declare global {
 
 export type RootStackParamList = {
   HOME: undefined;
-  SEARCH: undefined;
+  SEARCH: { scannedValue: string } | undefined;
+  BARCODESCAN: undefined;
 };
 
 export type RootStackScreenProps<Screen extends keyof RootStackParamList> =
