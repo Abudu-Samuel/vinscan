@@ -1,4 +1,4 @@
-import React, { FC, useState } from "react";
+import React, { FC, useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -14,8 +14,16 @@ import CustomButton from "../components/CustomButton";
 import { colors } from "../constants";
 import { RootStackScreenProps } from "../types";
 
-const SearchScreen: FC<RootStackScreenProps<"SEARCH">> = ({ navigation }) => {
-  const [searchText, setSearchText] = useState<string>("Scan a Vin Number");
+const SearchScreen: FC<RootStackScreenProps<"SEARCH">> = ({
+  navigation,
+  route,
+}) => {
+  const [searchText, setSearchText] = useState<string | undefined>("");
+  const scannedValue = route.params?.scannedValue;
+
+  useEffect(() => {
+    setSearchText(scannedValue);
+  }, [scannedValue]);
 
   return (
     <View style={styles.container}>
@@ -38,21 +46,25 @@ const SearchScreen: FC<RootStackScreenProps<"SEARCH">> = ({ navigation }) => {
                 pointerEvents="none"
                 editable={false}
                 value={searchText}
-                placeholder="useless placeholder"
+                placeholder="Scan a Vin Number"
+                placeholderTextColor={colors.black}
                 keyboardType="numeric"
               />
-              <View style={styles.scanIcon}>
+              <Pressable
+                onPress={() => navigation.navigate("BARCODESCAN")}
+                style={styles.scanIcon}
+              >
                 <Entypo name="camera" size={22} color={colors.darkGreen} />
-              </View>
+              </Pressable>
             </View>
           </View>
           <View style={styles.button}>
-          <CustomButton
-            title="SEARCH"
-            routeName="SEARCH"
-            navigation={navigation}
-          />
-        </View>
+            <CustomButton
+              title="SEARCH"
+              routeName="SEARCH"
+              navigation={navigation}
+            />
+          </View>
         </View>
       </SafeAreaView>
     </View>
@@ -72,6 +84,7 @@ const styles = StyleSheet.create({
     height: 45,
     width: "75%",
     margin: 12,
+    fontWeight: "bold",
     borderWidth: 1,
     borderColor: colors.white,
     padding: 10,
@@ -111,9 +124,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-  },
-  button: {
-    marginVertical: 15,
   },
   backButtonTop: {
     marginTop: "18%",

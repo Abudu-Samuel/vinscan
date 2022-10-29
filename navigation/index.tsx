@@ -4,6 +4,7 @@ import * as React from "react";
 import { Stack } from "../types";
 import HomeScreen from "../Screens";
 import SearchScreen from "../Screens/SearchScreen";
+import BarCodeScannerScreen from "../Screens/BarcodeScanner";
 
 function RootNavigator() {
   return (
@@ -16,6 +17,11 @@ function RootNavigator() {
       <Stack.Screen
         name="SEARCH"
         component={SearchScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="BARCODESCAN"
+        component={BarCodeScannerScreen}
         options={{ headerShown: false }}
       />
     </Stack.Navigator>
