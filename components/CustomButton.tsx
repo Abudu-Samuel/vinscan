@@ -13,7 +13,7 @@ export default function Button({ title, routeName, navigation }: ButtonProps) {
   return (
     <Pressable
       style={styles.button}
-      onPress={() => navigation.navigation.navigate(routeName)}
+      onPress={() => navigation.navigate(routeName)}
     >
       <Text style={styles.text}>{title}</Text>
     </Pressable>
