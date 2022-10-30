@@ -12,6 +12,9 @@ export type RootStackParamList = {
   HOME: undefined;
   SEARCH: { scannedValue: string } | undefined;
   BARCODESCAN: undefined;
+  CAR_INFO: undefined;
+  SEARCH_YEAR: undefined;
+  CARS_MODEL: { vehicleYear: string ; vehicleMake: string} | undefined;
 };
 
 export type RootStackScreenProps<Screen extends keyof RootStackParamList> =

@@ -1,5 +1,11 @@
 import React from "react";
-import { Text, StyleSheet, Pressable } from "react-native";
+import {
+  Text,
+  View,
+  StyleSheet,
+  Pressable,
+  ActivityIndicator,
+} from "react-native";
 
 import { colors, fontSize } from "../constants";
 
@@ -7,15 +13,28 @@ type ButtonProps = {
   title: string;
   routeName: string;
   navigation: any;
+  loading?: boolean;
 };
 
-export default function Button({ title, routeName, navigation }: ButtonProps) {
+export default function Button({
+  title,
+  routeName,
+  navigation,
+  loading,
+}: ButtonProps) {
   return (
     <Pressable
       style={styles.button}
       onPress={() => navigation.navigate(routeName)}
     >
-      <Text style={styles.text}>{title}</Text>
+      {loading ? (
+        <View style={{flexDirection: 'row'}}>
+          <ActivityIndicator color={colors.black} size="small" />
+          <Text style={styles.text}>LOADING</Text>
+        </View>
+      ) : (
+        <Text style={styles.text}>{title}</Text>
+      )}
     </Pressable>
   );
 }
