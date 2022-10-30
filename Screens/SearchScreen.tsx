@@ -11,6 +11,8 @@ import {
 } from "react-native";
 import { Entypo } from "@expo/vector-icons";
 import useAxios from "axios-hooks";
+import NetInfo from "@react-native-community/netinfo";
+import Modal from "react-native-modal";
 
 import { colors, BASE_URL, fontSize } from "../constants";
 import { RootStackScreenProps } from "../types";
@@ -22,6 +24,7 @@ const SearchScreen: FC<RootStackScreenProps<"SEARCH">> = ({
 }) => {
   const [searchText, setSearchText] = useState<string | undefined>("");
   const scannedValue = route.params?.scannedValue;
+  const [isOffline, setOfflineStatus] = useState(false);
 
   useEffect(() => {
     setSearchText(scannedValue);
@@ -35,11 +38,34 @@ const SearchScreen: FC<RootStackScreenProps<"SEARCH">> = ({
   );
 
   useEffect(() => {
+    const removeNetInfoSubscription = NetInfo.addEventListener((state) => {
+      const offline = !(state.isConnected && state.isInternetReachable);
+      setOfflineStatus(offline);
+    });
+
     if (data) {
       setItemToStorage("vehicle-info", JSON.stringify(data.Results));
-      return navigation.navigate("CAR_INFO");
+      setTimeout(() => {
+        return navigation.navigate("CAR_INFO");
+      }, 1200);
     }
+    return () => removeNetInfoSubscription();
   }, [data]);
+
+
+  const NoInternetModal = ({ show, onRetry, isRetrying }) => (
+    <Modal isVisible={show} style={styles.modal} animationInTiming={600}>
+      <View style={styles.modalContainer}>
+        <Text style={styles.modalTitle}>Connection Error</Text>
+        <Text style={styles.modalText}>
+          Oops! Looks like your device is not connected to the Internet.
+        </Text>
+        <Pressable  style={styles.buttonRow} onPress={() => onRetry()} disabled={isRetrying}>
+          <Text>Try again</Text>
+        </Pressable>
+      </View>
+    </Modal>
+  );
 
   return (
     <View style={styles.container}>
@@ -74,6 +100,11 @@ const SearchScreen: FC<RootStackScreenProps<"SEARCH">> = ({
               </Pressable>
             </View>
           </View>
+          <NoInternetModal
+            show={isOffline}
+            onRetry={refetch}
+            isRetrying={loading}
+          />
           <View style={styles.button}>
             <Pressable
               disabled={!searchText}
@@ -196,6 +227,28 @@ const styles = StyleSheet.create({
   searchText: {
     textAlign: "center",
     fontSize: 25,
+  },
+  modal: {
+    justifyContent: "flex-end",
+    margin: 0,
+  },
+  modalContainer: {
+    backgroundColor: "#fff",
+    paddingHorizontal: 16,
+    paddingTop: 20,
+    paddingBottom: 40,
+    alignItems: "center",
+  },
+  modalTitle: {
+    fontSize: 22,
+    fontWeight: "600",
+  },
+  modalText: {
+    fontSize: 18,
+    color: "#555",
+    marginTop: 14,
+    textAlign: "center",
+    marginBottom: 10,
   },
 });
 
