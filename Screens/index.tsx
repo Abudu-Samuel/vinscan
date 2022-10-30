@@ -29,15 +29,8 @@ const HomeScreen: FC<RootStackScreenProps<"HOME">> = ({ navigation }) => (
         </View>
         <View style={styles.button}>
           <CustomButton
-            title="YEAR/MAKE/MODEL"
-            routeName="YearMakeAndModel"
-            navigation={navigation}
-          />
-        </View>
-        <View style={styles.button}>
-          <CustomButton
-            title="LICENSE PLATE"
-            routeName="YearMakeAndModel"
+            title="YEAR / MAKE"
+            routeName="SEARCH_YEAR"
             navigation={navigation}
           />
         </View>

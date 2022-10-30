@@ -6,8 +6,8 @@ import {
   Image,
   SafeAreaView,
   Pressable,
-  TextInput,
   ActivityIndicator,
+  TextInput,
 } from "react-native";
 import { Entypo } from "@expo/vector-icons";
 import useAxios from "axios-hooks";
@@ -16,28 +16,26 @@ import { colors, BASE_URL, fontSize } from "../constants";
 import { RootStackScreenProps } from "../types";
 import { setItemToStorage } from "../utils/storage";
 
-const SearchScreen: FC<RootStackScreenProps<"SEARCH">> = ({
+const SearchYearScreen: FC<RootStackScreenProps<"SEARCH_YEAR">> = ({
   navigation,
-  route,
 }) => {
-  const [searchText, setSearchText] = useState<string | undefined>("");
-  const scannedValue = route.params?.scannedValue;
-
-  useEffect(() => {
-    setSearchText(scannedValue);
-  }, [scannedValue]);
+  const [year, setYear] = useState<string>("");
+  const [make, setMake] = useState<string>("");
 
   const [{ data, loading, error }, refetch] = useAxios(
-    `${BASE_URL}/vehicles/DecodeVinValues/${scannedValue}?format=json&modelyear=2011`,
+    `${BASE_URL}/vehicles/GetModelsForMakeYear/make/${make}/modelyear/${year}?format=json`,
     {
-      manual: !searchText,
+      manual: true,
     }
   );
 
   useEffect(() => {
     if (data) {
-      setItemToStorage("vehicle-info", JSON.stringify(data.Results));
-      return navigation.navigate("CAR_INFO");
+      setItemToStorage("vehicle-models", JSON.stringify(data.Results));
+      return navigation.navigate("CARS_MODEL", {
+        vehicleYear: year,
+        vehicleMake: make
+      });
     }
   }, [data]);
 
@@ -55,31 +53,25 @@ const SearchScreen: FC<RootStackScreenProps<"SEARCH">> = ({
             <Text style={styles.backText}>Back</Text>
           </Pressable>
           <View style={{ bottom: "10%" }}>
-            <Text style={styles.searchText}>Search by VIN</Text>
-            <View style={styles.textInputRow}>
-              <TextInput
-                style={styles.input}
-                pointerEvents="none"
-                editable={false}
-                value={searchText}
-                placeholder="Scan a Vin Number"
-                placeholderTextColor={colors.black}
-                keyboardType="numeric"
-              />
-              <Pressable
-                onPress={() => navigation.navigate("BARCODESCAN")}
-                style={styles.scanIcon}
-              >
-                <Entypo name="camera" size={22} color={colors.darkGreen} />
-              </Pressable>
-            </View>
+            <Text style={styles.searchText}>Search by Year, Make </Text>
+            <TextInput
+              style={styles.input}
+              value={year}
+              placeholder="Enter Year"
+              placeholderTextColor={colors.black}
+              keyboardType="numeric"
+              onChangeText={(text) => setYear(text)}
+            />
+            <TextInput
+              style={styles.input}
+              value={make}
+              placeholder="Enter Make"
+              placeholderTextColor={colors.black}
+              onChangeText={(text) => setMake(text)}
+            />
           </View>
           <View style={styles.button}>
-            <Pressable
-              disabled={!searchText}
-              style={styles.buttonRow}
-              onPress={() => refetch()}
-            >
+            <Pressable disabled={!make || !year} style={styles.buttonRow} onPress={() => refetch()}>
               {loading ? (
                 <View style={{ flexDirection: "row" }}>
                   <ActivityIndicator color={colors.black} size="small" />
@@ -131,7 +123,7 @@ const styles = StyleSheet.create({
   },
   input: {
     height: 45,
-    width: "75%",
+    width: "95%",
     margin: 12,
     fontWeight: "bold",
     borderWidth: 1,
@@ -199,4 +191,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default SearchScreen;
+export default SearchYearScreen;
