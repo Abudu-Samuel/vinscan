@@ -36,8 +36,8 @@ VIN SCAN application leverages:
 ```sh
 > $ yarn start
 ```
-- Download Expo go from Play store or App store
-- Scan the barcode shown in the termimanl after starting the app
+- Download Expo go from Play store or App store on your physical device
+- Scan the barcode shown in the termimanl with your phone's camera.
 - App launches on a physical device.
 
 ## Screenshots
